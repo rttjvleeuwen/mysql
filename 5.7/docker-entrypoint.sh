@@ -65,17 +65,18 @@ _get_config() {
 # allow the container to be started with `--user`
 if [ "$1" = 'mysqld' -a -z "$wantHelp" -a "$(id -u)" = '0' ]; then
 	_check_config "$@"
+	
 	DATADIR="$(_get_config 'datadir' "$@")"
 	
 	mkdir -p "$DATADIR"
 	rm -rf /tmp/init 
  	mkdir -p /tmp/init && chmod 700 /tmp/init && chown -R mysql:mysql /tmp/init
-#  	eval "gosu postgres initdb -D /tmp/init $POSTGRES_INITDB_ARGS"
+ 	eval gosu mysql "$BASH_SOURCE" "$@"
  	mv /tmp/init/* $DATADIR/
 	
 # 	mkdir -p "$DATADIR"
 # 	chown -R mysql:mysql "$DATADIR"
-	exec gosu mysql "$BASH_SOURCE" "$@"
+# 	exec gosu mysql "$BASH_SOURCE" "$@"
 fi
 
 if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
